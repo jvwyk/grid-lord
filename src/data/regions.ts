@@ -1,0 +1,48 @@
+import type { Region } from '@/types'
+
+export const REGIONS_INIT: Omit<Region, 'allocated'>[] = [
+  {
+    id: 'r1',
+    name: 'Northgate',
+    demand: 120,
+    price: 42,
+    priority: 'hospital',
+    stability: 72,
+    icon: '🏥',
+    popK: 340,
+    trait: 'High sensitivity — blackouts trigger major risk spikes',
+  },
+  {
+    id: 'r2',
+    name: 'Iron Basin',
+    demand: 95,
+    price: 38,
+    priority: 'industrial',
+    stability: 85,
+    icon: '🏭',
+    popK: 180,
+    trait: 'Price volatile — responds sharply to supply changes',
+  },
+  {
+    id: 'r3',
+    name: 'Lakeshore',
+    demand: 60,
+    price: 51,
+    priority: 'residential',
+    stability: 58,
+    icon: '🏘️',
+    popK: 520,
+    trait: 'Large population — unrest spreads fast',
+  },
+  {
+    id: 'r4',
+    name: 'Crest Hill',
+    demand: 45,
+    price: 44,
+    priority: 'commercial',
+    stability: 90,
+    icon: '🏢',
+    popK: 210,
+    trait: 'Low maintenance — stable income source',
+  },
+]
