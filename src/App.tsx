@@ -1,3 +1,15 @@
+import { useMetaStore } from '@/stores/metaStore'
+import TitleScreen from '@/screens/TitleScreen'
+import Dashboard from '@/screens/Dashboard'
+import ToastStack from '@/components/shared/Toast'
+
 export default function App() {
-  return <div className="min-h-screen bg-bg text-white">GridLord</div>
+  const screen = useMetaStore((s) => s.screen)
+
+  return (
+    <>
+      <ToastStack />
+      {screen === 'title' ? <TitleScreen /> : <Dashboard />}
+    </>
+  )
 }
