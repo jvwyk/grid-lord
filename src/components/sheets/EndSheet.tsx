@@ -1,6 +1,8 @@
+import { useEffect, useRef } from 'react'
 import { useGameStore } from '@/stores/gameStore'
 import { useMetaStore } from '@/stores/metaStore'
-import { fmt } from '@/utils/format'
+import { fmt, calcScore } from '@/utils/format'
+import { addRunToCareer, clearSave } from '@/hooks/usePersistence'
 
 interface EndSheetProps {
   type: 'over' | 'win'
@@ -11,16 +13,34 @@ export default function EndSheet({ type }: EndSheetProps) {
   const risk = useGameStore((s) => s.risk)
   const totalProfit = useGameStore((s) => s.totalProfit)
   const streak = useGameStore((s) => s.streak)
+  const money = useGameStore((s) => s.money)
   const initRun = useGameStore((s) => s.initRun)
   const setScreen = useMetaStore((s) => s.setScreen)
+  const setHasSave = useMetaStore((s) => s.setHasSave)
 
   const win = type === 'win'
-  const score =
-    Math.floor(totalProfit / 100) +
-    (win ? (100 - risk) * 10 : 0) +
-    day * 20 +
-    streak * 50
+  const score = calcScore(totalProfit, day, risk, streak, win)
   const color = win ? '#00E5A0' : '#FF3B30'
+
+  // Record run to career once when sheet mounts
+  const recorded = useRef(false)
+  useEffect(() => {
+    if (recorded.current) return
+    recorded.current = true
+    addRunToCareer({
+      id: String(Date.now()),
+      date: new Date().toISOString(),
+      result: win ? 'victory' : 'gameover',
+      day,
+      money,
+      totalProfit,
+      risk,
+      bestStreak: streak,
+      score,
+    })
+    clearSave()
+    setHasSave(false)
+  }, [win, day, money, totalProfit, risk, streak, score, setHasSave])
 
   const handleNewRun = () => {
     initRun()

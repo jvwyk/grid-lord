@@ -56,3 +56,18 @@ export const prioColor: Record<Priority, string> = {
   industrial: '#FFD60A',
   commercial: '#8E8AFF',
 }
+
+export function calcScore(
+  totalProfit: number,
+  day: number,
+  risk: number,
+  streak: number,
+  victory: boolean
+): number {
+  return (
+    Math.floor(totalProfit / 100) +
+    (victory ? (100 - risk) * 10 : 0) +
+    day * 20 +
+    streak * 50
+  )
+}

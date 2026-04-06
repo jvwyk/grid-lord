@@ -1,20 +1,43 @@
 import { useGameStore } from '@/stores/gameStore'
 import { useMetaStore } from '@/stores/metaStore'
-import { fmt } from '@/utils/format'
+import { fmt, calcScore } from '@/utils/format'
+import { addRunToCareer, clearSave } from '@/hooks/usePersistence'
 
 export default function MenuSheet() {
   const day = useGameStore((s) => s.day)
   const money = useGameStore((s) => s.money)
+  const risk = useGameStore((s) => s.risk)
+  const totalProfit = useGameStore((s) => s.totalProfit)
+  const streak = useGameStore((s) => s.streak)
   const setMenuOpen = useGameStore((s) => s.setMenuOpen)
   const initRun = useGameStore((s) => s.initRun)
   const setScreen = useMetaStore((s) => s.setScreen)
+  const setHasSave = useMetaStore((s) => s.setHasSave)
+
+  const abandonRun = () => {
+    addRunToCareer({
+      id: String(Date.now()),
+      date: new Date().toISOString(),
+      result: 'abandoned',
+      day,
+      money,
+      totalProfit,
+      risk,
+      bestStreak: streak,
+      score: calcScore(totalProfit, day, risk, streak, false),
+    })
+    clearSave()
+    setHasSave(false)
+  }
 
   const handleNewRun = () => {
+    abandonRun()
     initRun()
     setMenuOpen(false)
   }
 
   const handleTitle = () => {
+    abandonRun()
     initRun()
     setMenuOpen(false)
     setScreen('title')
@@ -51,7 +74,7 @@ export default function MenuSheet() {
         <span className="text-lg w-7 text-center shrink-0" style={{ color: '#FF6B35' }}>↻</span>
         <div>
           <span className="block font-mono text-sm font-bold" style={{ color: '#E0E0E0' }}>New Run</span>
-          <span className="block text-xs mt-px" style={{ color: '#555' }}>Start fresh from Day 1</span>
+          <span className="block text-xs mt-px" style={{ color: '#555' }}>Abandon and start fresh</span>
         </div>
       </button>
 
@@ -63,7 +86,7 @@ export default function MenuSheet() {
         <span className="text-lg w-7 text-center shrink-0" style={{ color: '#FF3B30' }}>✕</span>
         <div>
           <span className="block font-mono text-sm font-bold" style={{ color: '#FF3B30' }}>End Run</span>
-          <span className="block text-xs mt-px" style={{ color: '#555' }}>Return to title screen</span>
+          <span className="block text-xs mt-px" style={{ color: '#555' }}>Abandon and return to title</span>
         </div>
       </button>
 

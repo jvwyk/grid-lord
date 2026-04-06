@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { GameState, PowerUp, ActivePowerUp, Toast, SheetType } from '@/types'
+import type { GameState, PowerUp, ActivePowerUp, Toast, SheetType, SavedGame } from '@/types'
 import { REGIONS_INIT } from '@/data/regions'
 import { BLACK_MARKET_DEALS } from '@/data/blackMarket'
 import {
@@ -42,6 +42,7 @@ interface GameActions {
   // Game lifecycle
   initRun: () => void
   reset: () => void
+  loadSavedGame: (saved: SavedGame) => void
 
   // UI state
   setSheet: (sheet: SheetType) => void
@@ -96,6 +97,17 @@ export const useGameStore = create<GameState & GameActions>()((set, get) => ({
   initRun: () => set(freshState()),
 
   reset: () => set(freshState()),
+
+  loadSavedGame: (saved) =>
+    set({
+      ...freshState(),
+      ...saved.state,
+      // Ensure transient UI state is clean
+      toasts: [],
+      sheet: null,
+      expandedRegion: null,
+      menuOpen: false,
+    }),
 
   setSheet: (sheet) => set({ sheet }),
 

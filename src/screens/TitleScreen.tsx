@@ -1,14 +1,32 @@
 import { useGameStore } from '@/stores/gameStore'
 import { useMetaStore } from '@/stores/metaStore'
+import { loadGame } from '@/hooks/usePersistence'
+import { fmt } from '@/utils/format'
+import Sheet from '@/components/shared/Sheet'
+import CareerSheet from '@/components/sheets/CareerSheet'
 
 export default function TitleScreen() {
   const initRun = useGameStore((s) => s.initRun)
+  const loadSavedGame = useGameStore((s) => s.loadSavedGame)
   const setScreen = useMetaStore((s) => s.setScreen)
+  const hasSave = useMetaStore((s) => s.hasSave)
+  const careerOpen = useMetaStore((s) => s.careerOpen)
+  const setCareerOpen = useMetaStore((s) => s.setCareerOpen)
 
   const handleBegin = () => {
     initRun()
     setScreen('game')
   }
+
+  const handleContinue = () => {
+    const saved = loadGame()
+    if (saved) {
+      loadSavedGame(saved)
+      setScreen('game')
+    }
+  }
+
+  const savedPreview = hasSave ? loadGame() : null
 
   return (
     <div className="w-full h-dvh flex justify-center" style={{ background: '#050505' }}>
@@ -58,15 +76,50 @@ export default function TitleScreen() {
           <p className="text-sm italic tracking-[2px] mt-2" style={{ color: 'rgba(255,255,255,0.4)' }}>
             Power is finite. Control is not.
           </p>
-          <button
-            className="mt-12 px-12 py-4 rounded-sm"
-            style={{ border: '1px solid rgba(255,107,53,0.6)' }}
-            onClick={handleBegin}
-          >
-            <span className="font-mono text-sm font-semibold tracking-[4px]" style={{ color: '#FF6B35' }}>
-              BEGIN
-            </span>
-          </button>
+
+          <div className="flex flex-col items-center gap-3 mt-12 w-full max-w-[260px]">
+            {/* Continue button — only if save exists */}
+            {hasSave && savedPreview && (
+              <button
+                className="w-full px-6 py-4 rounded-sm"
+                style={{
+                  border: '1px solid rgba(0,229,160,0.5)',
+                  background: 'rgba(0,229,160,0.04)',
+                }}
+                onClick={handleContinue}
+              >
+                <span className="block font-mono text-sm font-semibold tracking-[4px]" style={{ color: '#00E5A0' }}>
+                  CONTINUE
+                </span>
+                <span className="block font-mono text-[10px] mt-1" style={{ color: 'rgba(0,229,160,0.5)' }}>
+                  Day {savedPreview.state.day} · ${fmt(savedPreview.state.money)}
+                </span>
+              </button>
+            )}
+
+            {/* Begin button */}
+            <button
+              className="w-full px-6 py-4 rounded-sm"
+              style={{ border: '1px solid rgba(255,107,53,0.6)' }}
+              onClick={handleBegin}
+            >
+              <span className="font-mono text-sm font-semibold tracking-[4px]" style={{ color: '#FF6B35' }}>
+                BEGIN
+              </span>
+            </button>
+
+            {/* Career button */}
+            <button
+              className="w-full px-6 py-3 rounded-sm"
+              style={{ border: '1px solid rgba(255,255,255,0.08)' }}
+              onClick={() => setCareerOpen(true)}
+            >
+              <span className="font-mono text-xs font-semibold tracking-[4px]" style={{ color: '#555' }}>
+                CAREER
+              </span>
+            </button>
+          </div>
+
           <p className="mt-6 text-[11px] tracking-[1px]" style={{ color: 'rgba(255,255,255,0.2)' }}>
             Web-first · Mobile-optimised · Strategy
           </p>
@@ -80,6 +133,11 @@ export default function TitleScreen() {
           v0.1.0 — PRODUCTION
         </div>
       </div>
+
+      {/* Career Sheet */}
+      <Sheet open={careerOpen} onClose={() => setCareerOpen(false)}>
+        <CareerSheet />
+      </Sheet>
     </div>
   )
 }

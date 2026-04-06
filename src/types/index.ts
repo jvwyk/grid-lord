@@ -118,3 +118,30 @@ export interface GameState {
   totalProfit: number
   toasts: Toast[]
 }
+
+// ── Persistence ──
+export interface SavedGame {
+  state: Omit<GameState, 'toasts' | 'sheet' | 'expandedRegion' | 'menuOpen'>
+  savedAt: number
+}
+
+export interface RunRecord {
+  id: string
+  date: string
+  result: 'victory' | 'gameover' | 'abandoned'
+  day: number
+  money: number
+  totalProfit: number
+  risk: number
+  bestStreak: number
+  score: number
+}
+
+export interface CareerData {
+  runs: RunRecord[]
+  bestScore: number
+  bestProfit: number
+  bestStreak: number
+  totalRuns: number
+  victories: number
+}
