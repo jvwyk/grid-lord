@@ -1,7 +1,6 @@
 import { useGameStore } from '@/stores/gameStore'
 import { POWERUPS } from '@/data/powerups'
 import { fmt } from '@/utils/format'
-import type { PowerUp } from '@/types'
 
 export default function PowerUpSheet() {
   const money = useGameStore((s) => s.money)

@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { useGameStore, getGeneration } from '@/stores/gameStore'
+import { useGameStore } from '@/stores/gameStore'
 import { fmt, clamp, allocColor, allocLabel, prioColor } from '@/utils/format'
 import MiniBar from '@/components/shared/MiniBar'
 

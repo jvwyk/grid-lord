@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { GameState, PowerUp, ActivePowerUp, Toast, SheetType, GameEvent } from '@/types'
+import type { GameState, PowerUp, ActivePowerUp, Toast, SheetType } from '@/types'
 import { REGIONS_INIT } from '@/data/regions'
 import { BLACK_MARKET_DEALS } from '@/data/blackMarket'
 import {
