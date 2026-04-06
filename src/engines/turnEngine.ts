@@ -34,11 +34,9 @@ export function executeTurn(input: TurnEngineInput): TurnEngineOutput {
   // Black market income
   const bmIncome = selectedDeal ? selectedDeal.mw * selectedDeal.price : 0
 
-  // Supply costs
+  // Supply costs (no power-up currently reduces costs; costMult is for event effects like Federal Subsidy)
   const totalAllocated = regions.reduce((sum, r) => sum + r.allocated, 0)
-  const hasCostReduction = activePowerups.some((p) => p.effect === 'intel') // placeholder for costMult events
-  const costMult = hasCostReduction ? 0.75 : 1
-  const costs = Math.round(totalAllocated * COST_PER_MW * costMult)
+  const costs = Math.round(totalAllocated * COST_PER_MW)
 
   // Risk
   const riskDelta = calculateRiskDelta(regions, selectedDeal, shieldActive)

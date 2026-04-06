@@ -1,14 +1,19 @@
-import { useGameStore, getRemaining } from '@/stores/gameStore'
-import { RISK_GAME_OVER } from '@/data/balanceTables'
+import { useGameStore } from '@/stores/gameStore'
+import { BASE_GENERATION, SURGE_BONUS_MW, RISK_GAME_OVER } from '@/data/balanceTables'
 
 export default function BottomDock() {
   const day = useGameStore((s) => s.day)
   const risk = useGameStore((s) => s.risk)
   const streak = useGameStore((s) => s.streak)
+  const stored = useGameStore((s) => s.stored)
+  const regions = useGameStore((s) => s.regions)
+  const activePowerups = useGameStore((s) => s.activePowerups)
   const endTurn = useGameStore((s) => s.endTurn)
   const setSheet = useGameStore((s) => s.setSheet)
 
-  const remaining = getRemaining(useGameStore.getState())
+  const generation = BASE_GENERATION + (activePowerups.some((p) => p.effect === 'surge') ? SURGE_BONUS_MW : 0)
+  const totalAllocated = regions.reduce((sum, r) => sum + r.allocated, 0)
+  const remaining = generation + stored - totalAllocated
   const isGameOver = risk >= RISK_GAME_OVER
 
   const remainColor = remaining < 0 ? '#FF3B30' : remaining < 50 ? '#FFD60A' : '#00E5A0'

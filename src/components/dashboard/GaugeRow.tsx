@@ -1,9 +1,8 @@
-import { useGameStore, getGeneration, getTotalAllocated } from '@/stores/gameStore'
-import { STORAGE_MAX, SURGE_BONUS_MW } from '@/data/balanceTables'
+import { useGameStore } from '@/stores/gameStore'
+import { BASE_GENERATION, STORAGE_MAX, SURGE_BONUS_MW } from '@/data/balanceTables'
 import { clamp } from '@/utils/format'
 
 export default function GaugeRow() {
-  const state = useGameStore.getState()
   const activePowerups = useGameStore((s) => s.activePowerups)
   const stored = useGameStore((s) => s.stored)
   const regions = useGameStore((s) => s.regions)
@@ -11,7 +10,7 @@ export default function GaugeRow() {
   const setSheet = useGameStore((s) => s.setSheet)
 
   const surgeActive = activePowerups.some((p) => p.effect === 'surge')
-  const generation = getGeneration(useGameStore.getState())
+  const generation = BASE_GENERATION + (surgeActive ? SURGE_BONUS_MW : 0)
   const totalAllocated = regions.reduce((sum, r) => sum + r.allocated, 0)
   const allocPct = clamp((totalAllocated / generation) * 100, 0, 100)
 

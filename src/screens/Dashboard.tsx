@@ -1,4 +1,5 @@
-import { useGameStore, getSelectedDealData } from '@/stores/gameStore'
+import { useGameStore } from '@/stores/gameStore'
+import { BLACK_MARKET_DEALS } from '@/data/blackMarket'
 import StatusBar from '@/components/dashboard/StatusBar'
 import RiskRow from '@/components/dashboard/RiskRow'
 import GaugeRow from '@/components/dashboard/GaugeRow'
@@ -23,7 +24,7 @@ export default function Dashboard() {
   const setMenuOpen = useGameStore((s) => s.setMenuOpen)
   const nextDay = useGameStore((s) => s.nextDay)
 
-  const bmDeal = getSelectedDealData(useGameStore.getState())
+  const bmDeal = selectedDeal ? BLACK_MARKET_DEALS.find((d) => d.id === selectedDeal) ?? null : null
 
   return (
     <div className="w-full flex justify-center min-h-screen" style={{ background: '#050505', fontFamily: 'var(--font-sans)' }}>

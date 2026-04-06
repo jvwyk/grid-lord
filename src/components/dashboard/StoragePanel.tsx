@@ -1,15 +1,18 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { useGameStore, getGeneration, getRemaining } from '@/stores/gameStore'
-import { STORAGE_MAX } from '@/data/balanceTables'
+import { useGameStore } from '@/stores/gameStore'
+import { BASE_GENERATION, SURGE_BONUS_MW, STORAGE_MAX } from '@/data/balanceTables'
 
 export default function StoragePanel() {
   const sheet = useGameStore((s) => s.sheet)
   const stored = useGameStore((s) => s.stored)
+  const regions = useGameStore((s) => s.regions)
+  const activePowerups = useGameStore((s) => s.activePowerups)
   const storeEnergy = useGameStore((s) => s.storeEnergy)
   const setSheet = useGameStore((s) => s.setSheet)
 
-  const state = useGameStore.getState()
-  const remaining = getRemaining(state)
+  const generation = BASE_GENERATION + (activePowerups.some((p) => p.effect === 'surge') ? SURGE_BONUS_MW : 0)
+  const totalAllocated = regions.reduce((sum, r) => sum + r.allocated, 0)
+  const remaining = generation + stored - totalAllocated
   const open = sheet === 'storage'
 
   return (
