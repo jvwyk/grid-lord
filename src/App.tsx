@@ -7,9 +7,9 @@ export default function App() {
   const screen = useMetaStore((s) => s.screen)
 
   return (
-    <>
+    <div className="h-dvh overflow-hidden">
       <ToastStack />
       {screen === 'title' ? <TitleScreen /> : <Dashboard />}
-    </>
+    </div>
   )
 }

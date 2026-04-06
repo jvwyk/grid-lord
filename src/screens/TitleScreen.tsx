@@ -11,9 +11,9 @@ export default function TitleScreen() {
   }
 
   return (
-    <div className="w-full min-h-screen flex justify-center" style={{ background: '#050505' }}>
+    <div className="w-full h-dvh flex justify-center" style={{ background: '#050505' }}>
       <div
-        className="w-full max-w-[430px] min-h-screen flex flex-col items-center justify-center relative overflow-hidden px-8 py-10"
+        className="w-full max-w-[430px] h-dvh flex flex-col items-center justify-center relative overflow-hidden px-8 py-10"
         style={{ background: '#0A0A0A' }}
       >
         {/* Grid pattern */}

@@ -20,8 +20,8 @@ export default function BottomDock() {
 
   return (
     <div
-      className="sticky bottom-0 pt-2 z-10"
-      style={{ background: 'linear-gradient(transparent, #0D0D0D 15%)' }}
+      className="shrink-0 px-3.5 pt-2 pb-3.5"
+      style={{ background: '#0D0D0D', paddingBottom: 'max(0.875rem, env(safe-area-inset-bottom))' }}
     >
       <div className="text-center font-mono text-[11px] mb-2 py-1">
         <span style={{ color: remainColor }}>{remaining} MW remaining</span>

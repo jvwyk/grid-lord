@@ -1,0 +1,18 @@
+{
+  "name": "GRIDLORD",
+  "short_name": "GridLord",
+  "description": "Power is finite. Control is not.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#050505",
+  "theme_color": "#FF6B35",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
