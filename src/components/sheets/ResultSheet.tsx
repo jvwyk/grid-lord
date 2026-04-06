@@ -1,5 +1,6 @@
 import { useGameStore } from '@/stores/gameStore'
 import { fmt, riskColor } from '@/utils/format'
+import { DAILY_COST_BASE, DAILY_COST_ESCALATION } from '@/data/balanceTables'
 
 export default function ResultSheet() {
   const day = useGameStore((s) => s.day)
@@ -9,10 +10,13 @@ export default function ResultSheet() {
 
   if (!turnData) return null
 
+  const opCost = DAILY_COST_BASE + (day - 1) * DAILY_COST_ESCALATION
+
   const rows = [
     { l: 'Grid Revenue', v: `+$${fmt(turnData.revenue)}`, c: '#00E5A0' },
     { l: 'Black Market', v: turnData.bmIncome > 0 ? `+$${fmt(turnData.bmIncome)}` : '—', c: turnData.bmIncome > 0 ? '#FF6B35' : '#333' },
     { l: 'Supply Costs', v: `-$${fmt(turnData.costs)}`, c: '#FF3B30' },
+    { l: 'Operating Costs', v: `-$${fmt(opCost)}`, c: '#FF6B35' },
   ]
 
   return (

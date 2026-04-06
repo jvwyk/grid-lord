@@ -6,6 +6,8 @@ import {
   BLACKOUT_PENALTY_OTHER,
   RISK_DECAY_PER_TURN,
   SHIELD_RISK_MULTIPLIER,
+  STABILITY_UNREST_THRESHOLD,
+  STABILITY_UNREST_RISK,
 } from '@/data/balanceTables'
 
 /**
@@ -29,7 +31,12 @@ export function calculateRiskDelta(
 
   const dealRisk = deal ? deal.risk : 0
 
-  let delta = blackoutPenalty + dealRisk - RISK_DECAY_PER_TURN
+  // Unrest penalty: regions with very low stability add risk
+  const unrestPenalty = regions.filter(
+    (r) => r.stability < STABILITY_UNREST_THRESHOLD
+  ).length * STABILITY_UNREST_RISK
+
+  let delta = blackoutPenalty + dealRisk + unrestPenalty - RISK_DECAY_PER_TURN
 
   if (shieldActive) {
     delta = Math.round(delta * SHIELD_RISK_MULTIPLIER)

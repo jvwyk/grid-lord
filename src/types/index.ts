@@ -93,6 +93,15 @@ export interface TurnResult {
   newStreak: number
 }
 
+// ── Active Effects (from events) ──
+export type EffectKind = 'supplyMult' | 'riskMult' | 'costMult'
+
+export interface ActiveEffect {
+  kind: EffectKind
+  value: number
+  turnsLeft: number
+}
+
 // ── Toast ──
 export interface Toast {
   id: number
@@ -114,6 +123,9 @@ export interface GameState {
   currentEvent: GameEvent | null
   menuOpen: boolean
   activePowerups: ActivePowerUp[]
+  activeEffects: ActiveEffect[]
+  availableDeals: BlackMarketDeal[]
+  completedMilestones: string[]
   streak: number
   totalProfit: number
   toasts: Toast[]
@@ -123,6 +135,16 @@ export interface GameState {
 export interface SavedGame {
   state: Omit<GameState, 'toasts' | 'sheet' | 'expandedRegion' | 'menuOpen'>
   savedAt: number
+}
+
+// ── Deal Templates ──
+export interface DealTemplate {
+  buyer: string
+  baseMW: number
+  basePrice: number
+  baseRisk: number
+  desc: string
+  tag: string
 }
 
 export interface RunRecord {

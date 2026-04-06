@@ -1,9 +1,9 @@
 import { useGameStore } from '@/stores/gameStore'
-import { BLACK_MARKET_DEALS } from '@/data/blackMarket'
 import { fmt } from '@/utils/format'
 
 export default function BlackMarketSheet() {
   const selectedDeal = useGameStore((s) => s.selectedDeal)
+  const availableDeals = useGameStore((s) => s.availableDeals)
   const selectDeal = useGameStore((s) => s.selectDeal)
   const setSheet = useGameStore((s) => s.setSheet)
 
@@ -30,7 +30,7 @@ export default function BlackMarketSheet() {
         <span>Off-grid deals increase heat.</span>
       </div>
 
-      {BLACK_MARKET_DEALS.map((d) => {
+      {availableDeals.map((d) => {
         const active = selectedDeal === d.id
         return (
           <button

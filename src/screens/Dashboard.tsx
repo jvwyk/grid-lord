@@ -1,5 +1,4 @@
 import { useGameStore } from '@/stores/gameStore'
-import { BLACK_MARKET_DEALS } from '@/data/blackMarket'
 import StatusBar from '@/components/dashboard/StatusBar'
 import RiskRow from '@/components/dashboard/RiskRow'
 import GaugeRow from '@/components/dashboard/GaugeRow'
@@ -18,13 +17,15 @@ export default function Dashboard() {
   const regions = useGameStore((s) => s.regions)
   const activePowerups = useGameStore((s) => s.activePowerups)
   const selectedDeal = useGameStore((s) => s.selectedDeal)
+  const availableDeals = useGameStore((s) => s.availableDeals)
+  const activeEffects = useGameStore((s) => s.activeEffects)
   const sheet = useGameStore((s) => s.sheet)
   const menuOpen = useGameStore((s) => s.menuOpen)
   const setSheet = useGameStore((s) => s.setSheet)
   const setMenuOpen = useGameStore((s) => s.setMenuOpen)
   const nextDay = useGameStore((s) => s.nextDay)
 
-  const bmDeal = selectedDeal ? BLACK_MARKET_DEALS.find((d) => d.id === selectedDeal) ?? null : null
+  const bmDeal = selectedDeal ? availableDeals.find((d) => d.id === selectedDeal) ?? null : null
 
   return (
     <div className="w-full h-dvh flex justify-center" style={{ background: '#050505', fontFamily: 'var(--font-sans)' }}>
@@ -46,12 +47,12 @@ export default function Dashboard() {
           <StatusBar />
           <RiskRow />
 
-          {/* Active power-up chips */}
-          {activePowerups.length > 0 && (
+          {/* Active power-up + effect chips */}
+          {(activePowerups.length > 0 || activeEffects.length > 0) && (
             <div className="flex gap-1.5 mb-2.5 flex-wrap">
               {activePowerups.map((p, i) => (
                 <div
-                  key={i}
+                  key={`pu-${i}`}
                   className="flex items-center gap-1 px-2.5 py-1 rounded-full text-sm"
                   style={{ border: `1px solid ${p.color}40`, background: p.color + '10' }}
                 >
@@ -61,6 +62,24 @@ export default function Dashboard() {
                   </span>
                 </div>
               ))}
+              {activeEffects.map((e, i) => {
+                const label = e.kind === 'supplyMult' ? '⚠️ Supply' : e.kind === 'riskMult' ? '🔴 Risk' : '💰 Cost'
+                const color = e.kind === 'supplyMult' ? '#FFD60A' : e.kind === 'riskMult' ? '#FF3B30' : '#00E5A0'
+                return (
+                  <div
+                    key={`fx-${i}`}
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-full text-sm"
+                    style={{ border: `1px solid ${color}40`, background: color + '10' }}
+                  >
+                    <span className="font-mono text-[9px] font-bold" style={{ color }}>
+                      {label} ×{e.value}
+                    </span>
+                    <span className="font-mono text-[10px] font-bold" style={{ color }}>
+                      {e.turnsLeft}t
+                    </span>
+                  </div>
+                )
+              })}
             </div>
           )}
         </div>

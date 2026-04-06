@@ -7,6 +7,8 @@ import {
   STABILITY_GAIN,
   STABILITY_LOSS,
   STABILITY_SUPPLY_THRESHOLD,
+  DEMAND_GROWTH_PER_DAY,
+  STABILITY_LOW_VOLATILITY_THRESHOLD,
 } from '@/data/balanceTables'
 import { clamp } from '@/utils/format'
 
@@ -16,18 +18,26 @@ import { clamp } from '@/utils/format'
  */
 export function recalculatePrices(
   regions: Region[],
-  priceLock: boolean
+  priceLock: boolean,
+  _day: number = 1
 ): Region[] {
   return regions.map((r) => {
-    const demandRange = DEMAND_FLUCTUATION_MAX - DEMAND_FLUCTUATION_MIN
-    const newDemand = Math.round(
-      r.demand * (DEMAND_FLUCTUATION_MIN + Math.random() * demandRange)
-    )
+    // Demand volatility doubles when stability is low
+    const volatilityMult = r.stability < STABILITY_LOW_VOLATILITY_THRESHOLD ? 2.0 : 1.0
+    const demandRange = (DEMAND_FLUCTUATION_MAX - DEMAND_FLUCTUATION_MIN) * volatilityMult
+    const demandCenter = (DEMAND_FLUCTUATION_MAX + DEMAND_FLUCTUATION_MIN) / 2
+    const randomFactor = demandCenter - demandRange / 2 + Math.random() * demandRange
 
+    // Incremental demand growth each day (+flat MW per region)
+    const newDemand = Math.max(20, Math.round(r.demand * randomFactor + DEMAND_GROWTH_PER_DAY))
+
+    // Stability affects prices: low stability → lower prices (customers leaving)
+    const stabilityPriceMult = 0.7 + (r.stability / 100) * 0.6
     const priceRange = PRICE_FLUCTUATION_MAX - PRICE_FLUCTUATION_MIN
+    const randomPriceFactor = PRICE_FLUCTUATION_MIN + Math.random() * priceRange
     const newPrice = priceLock
       ? r.price
-      : Math.round(r.price * (PRICE_FLUCTUATION_MIN + Math.random() * priceRange))
+      : Math.max(10, Math.round(r.price * randomPriceFactor * stabilityPriceMult))
 
     const supplyRatio = r.demand > 0 ? r.allocated / r.demand : 0
     const stabilityDelta =

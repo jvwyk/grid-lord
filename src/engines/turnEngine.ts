@@ -9,6 +9,8 @@ export interface TurnEngineInput {
   selectedDeal: BlackMarketDeal | null
   activePowerups: ActivePowerUp[]
   streak: number
+  costMult?: number
+  riskMult?: number
 }
 
 export interface TurnEngineOutput {
@@ -21,7 +23,7 @@ export interface TurnEngineOutput {
  * Pure function — takes state in, returns results out.
  */
 export function executeTurn(input: TurnEngineInput): TurnEngineOutput {
-  const { regions, selectedDeal, activePowerups, streak } = input
+  const { regions, selectedDeal, activePowerups, streak, costMult = 1, riskMult = 1 } = input
 
   const shieldActive = activePowerups.some((p) => p.effect === 'shield')
 
@@ -34,12 +36,15 @@ export function executeTurn(input: TurnEngineInput): TurnEngineOutput {
   // Black market income
   const bmIncome = selectedDeal ? selectedDeal.mw * selectedDeal.price : 0
 
-  // Supply costs (no power-up currently reduces costs; costMult is for event effects like Federal Subsidy)
+  // Supply costs (costMult from event effects like Federal Subsidy)
   const totalAllocated = regions.reduce((sum, r) => sum + r.allocated, 0)
-  const costs = Math.round(totalAllocated * COST_PER_MW)
+  const costs = Math.round(totalAllocated * COST_PER_MW * costMult)
 
-  // Risk
-  const riskDelta = calculateRiskDelta(regions, selectedDeal, shieldActive)
+  // Risk (riskMult from event effects like Government Audit)
+  let riskDelta = calculateRiskDelta(regions, selectedDeal, shieldActive)
+  if (riskMult !== 1) {
+    riskDelta = Math.round(riskDelta * riskMult)
+  }
 
   // Streak
   const { streak: newStreak, bonus: streakBonus } = checkStreak(regions, streak)
