@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+@theme {
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'DM Sans', sans-serif;
+
+  --color-bg: #0D0D0D;
+  --color-bg-deep: #050505;
+  --color-surface: rgba(255, 255, 255, 0.02);
+  --color-border: rgba(255, 255, 255, 0.05);
+
+  --color-orange: #FF6B35;
+  --color-green: #00E5A0;
+  --color-red: #FF3B30;
+  --color-yellow: #FFD60A;
+  --color-purple: #8E8AFF;
+  --color-purple-light: #B0ADFF;
+}
+
+*, *::before, *::after {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg-deep);
+}
+
+button {
+  cursor: pointer;
+}
+
+button:active {
+  transform: scale(0.97);
+  transition: transform 0.08s;
+}
+
+/* Animations */
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.2; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.4; transform: translate(-50%, -50%) scale(1.12); }
+}
+
+@keyframes glint {
+  0% { left: -40%; }
+  100% { left: 140%; }
+}
+
+@keyframes scan-move {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+}
+
+@keyframes slide-down {
+  from { opacity: 0; max-height: 0; }
+  to { opacity: 1; max-height: 600px; }
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+}
+
+@keyframes toast-out {
+  to { opacity: 0; transform: translateY(-10px) scale(0.95); }
+}
+
+/* Stagger animation */
+.stagger-in > * {
+  animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.stagger-in > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-in > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-in > *:nth-child(3) { animation-delay: 0.35s; }
+.stagger-in > *:nth-child(4) { animation-delay: 0.5s; }
+.stagger-in > *:nth-child(5) { animation-delay: 0.65s; }
+
+/* Slide down for expanded panels */
+.slide-down {
+  animation: slide-down 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Toast animation */
+.toast-in {
+  animation: toast-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both,
+             toast-out 0.3s 2.5s ease both;
+}
+
+/* Allocation slider */
+.alloc-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 36px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.alloc-slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(
+    to right,
+    var(--fill-color) var(--fill-pct),
+    rgba(255, 255, 255, 0.05) var(--fill-pct)
+  );
+}
+
+.alloc-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--fill-color);
+  border: 3px solid #0D0D0D;
+  margin-top: -11px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+
+.alloc-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+}
+
+.alloc-slider::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--fill-color);
+  border: 3px solid #0D0D0D;
+}
+
+.alloc-slider::-moz-range-progress {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--fill-color);
+}
